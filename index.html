@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="Deformable Neural Radiance Fields creates free-viewpoint portraits (nerfies) from casually captured videos.">   <!-- 告诉搜索引擎这个网站是关于什么的研究 -->
+  <meta name="keywords" content="RL, Humanoid, Quadruped ">
+  <meta name="viewport" content="width=device-width, initial-scale=1"> <!-- 设置视口，使网页在移动设备上自适应宽度，初始缩放比例为 1（不放大或缩小） -->
+  <title>Motion Control Framework for Humanoid Robots Based on Non-Privileged Information</title> <!-- 网页标题 -->
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet"> <!-- 从 Google Fonts 加载三种字体（Google Sans、Noto Sans、Castoro），用于网页文本样式。 -->
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css"> <!-- 引入 Bulma CSS 框架 -->
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css"> <!-- 引入 Bulma Carousel CSS 框架 -->
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css"> <!-- 引入 Bulma Slider CSS 框架 -->
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css"> <!-- 引入 Font Awesome CSS 框架 -->
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css"> <!-- 引入 Academicons CSS 框架 -->
+  <link rel="stylesheet" href="./static/css/index.css"> <!-- 引入自定义 CSS 样式表 -->
+  <link rel="icon" href="./static/images/rocket.png"> <!-- 网站图标 -->
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> <!-- 引入 jQuery -->
+  <script defer src="./static/js/fontawesome.all.min.js"></script> <!-- 引入 Font Awesome JS 框架 -->
+  <script src="./static/js/bulma-carousel.min.js"></script> <!-- 引入 Bulma Carousel JS 框架 -->
+  <script src="./static/js/bulma-slider.min.js"></script> <!-- 引入 Bulma Slider JS 框架 -->
+  <script src="./static/js/index.js"></script> <!-- 引入自定义 JS 脚本 -->
+</head>
+<body>
+
+<nav class="navbar" role="navigation" aria-label="main navigation"> <!-- 创建导航栏，使用 Bulma 的 navbar 类，role 和 aria-label 增强无障碍访问 -->
+  <div class="navbar-brand"> <!-- 定义导航栏的品牌部分，通常包含 logo 或菜单按钮。 -->
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"> <!-- 创建响应式菜单按钮，使用 Bulma 的 navbar-burger 类，role 和 aria-label 增强无障碍访问 -->
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+  <div class="navbar-menu"> <!-- 定义导航栏的可展开菜单部分。 -->
+    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+      <a class="navbar-item" href="https://irse-robot.github.io/sslmy.github.io/">
+      <span class="icon">
+          <i class="fas fa-home"></i>
+      </span>
+      </a>
+
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">
+          More Research
+        </a>
+        <div class="navbar-dropdown"> <!-- 定义下拉菜单，使用 Bulma 的 navbar-dropdown 类，下面就添加其他的研究，只需要在下面复制粘贴即可 -->
+          <a class="navbar-item" href="https://irselab-hitsz.github.io/PTRL/">
+            PTRL
+          </a>
+       </div>
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">Motion Control Framework for Humanoid Robots Based on Non-Privileged Information</h1> <!-- 标题 -->
+          <div class="is-size-5 publication-authors">
+
+            <span class="author-block">
+              Shilong Sun<sup>1,2</sup>,
+            </span>
+            <span class="author-block">
+              Yuanpeng Wang<sup>1</sup>,
+            </span>
+            <span class="author-block">
+              Haodong Huang<sup>1</sup>,
+            </span>
+            <span class="author-block">
+              Zida Zhao<sup>1</sup>,
+            </span>
+            <span class="author-block">
+              Chiyao Li<sup>1</sup>
+            </span>
+            <span class="author-block">
+              Wenfu Xu<sup>1,2,3</sup>
+            </span>
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><sup>1</sup>School of Robotics and Advanced Manufacturing, Harbin Institute of Technology, Shenzhen </span>,
+            <span class="author-block"><sup>2</sup>Guangdong Provincial Key Laboratory of Intelligent Morphing Mechanisms and Adaptive Robotics </span>
+            <span class="author-block"><sup>3</sup>Key University Laboratory of Mechanism & Machine Theory and Intelligent Unmanned Systems of Guangdong  </span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link.
+              <span class="link-block">
+                <a href="这里放上PDF的链接"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              --><!-- 这里是pdf的链接，我们这次没有 -->
+              
+              <!-- arxiv Link.
+              <span class="link-block">
+                <a href="arxiv的链接"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+              -->
+              <!-- PDF Link.-->
+              <span class="link-block">
+                <a class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+
+
+              <!-- Video Link. -->
+              <span class="link-block">
+                <a href="./static/videos/MCNI.mp4"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-youtube"></i>
+                  </span>
+                  <span>Video</span>
+                </a>
+              </span>
+
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                  </a>
+              </span>
+
+              <!-- Dataset Link
+              <span class="link-block">
+                <a href="https://github.com/google/nerfies/releases/tag/0.1"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="far fa-images"></i>
+                  </span>
+                  <span>Data</span>
+                  </a>
+              -->
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <video id="teaser" autoplay muted loop playsinline height="100%">
+        <source src="./static/videos/MCNI.mp4"
+                type="video/mp4">
+      </video>
+      <h2 class="subtitle has-text-centered">
+        <span class="dnerf"></span> Non-Privileged Information and Reinforcement Learning.
+      </h2>
+    </div>
+  </div>
+</section>
+
+<section class="section hero is-light">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2> <!-- 摘要 -->
+        <div class="content has-text-justified">
+          <p>
+            Recent research in humanoid robot motion control has made significant progress, particularly with the capabilities of reinforcement learning methods in complex environments. However, existing studies often focus on the design of privileged information and reward functions, a process that is typically time-consuming and requires careful selection of reward parameters to develop an efficient motion control framework. This paper presents a novel motion control framework for humanoid robots that relies solely on limited self-perception data, enabling humanoid robots to walk on challenging terrains without depending on privileged information. To validate the effectiveness of our approach, we conducted simulation experiments. The results demonstrate that our control framework outperforms existing methods, thereby advancing the development and application of humanoid robots in complex environments.
+          </p>
+        </div>
+      </div>
+    </div>
+</section>
+
+
+<section class="section">
+  <!-- Training pipeline with image and text -->
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Training Pipeline</h2>
+        <div class="publication-image">
+          <img src="./static/images/Traingpip.png" alt="Training Pipeline Diagram" style="width: 100%;">
+        </div>
+        <div class="content has-text-justified">
+          <p>
+            The solid lines represent the data transmission process, while the dashed lines indicate the network update process.
+          </p>
+          <p>
+            The body-aware sequence  is encoded through LSTM and MLP encoders to output latent variables , which are then received by the Actor MLP, Critic MLP and Transmodel MLP.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- 大标题 -->
+    <h1 class="title is-3 has-text-centered">Simulation</h1>
+
+    <!-- 第一排：2 个视频 -->
+    <div class="columns is-centered">
+      <div class="column is-6">
+        <video controls muted playsinline height="100%" style="width: 100%; display: block; margin: 0 auto;">
+          <source src="./static/videos/IRSE 1ms.mp4" type="video/mp4">
+        </video>
+        <p class="has-text-centered"><strong>IRSE</strong></p>
+      </div>
+      <div class="column is-6">
+        <video controls muted playsinline height="100%" style="width: 100%; display: block; margin: 0 auto;">
+          <source src="./static/videos/TRON 1ms.mp4" type="video/mp4">
+        </video>
+        <p class="has-text-centered"><strong>TRON</strong></p>
+      </div>
+    </div>
+
+<!--    &lt;!&ndash; 第二排：2 个视频 &ndash;&gt;-->
+<!--    <div class="columns is-centered">-->
+<!--      <div class="column is-6">-->
+<!--        <video controls muted playsinline height="100%" style="width: 100%; display: block; margin: 0 auto;">-->
+<!--          <source src="./static/videos/fixed_anymalbblack.mp4" type="video/mp4">-->
+<!--        </video>-->
+<!--        <p class="has-text-centered"><strong>Anymal_B</strong></p>-->
+<!--      </div>-->
+<!--      <div class="column is-6">-->
+<!--        <video controls muted playsinline height="100%" style="width: 100%; display: block; margin: 0 auto;">-->
+<!--          <source src="./static/videos/fixed_go2black.mp4" type="video/mp4">-->
+<!--        </video>-->
+<!--        <p class="has-text-centered"><strong>Go2</strong></p>-->
+<!--      </div>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; 第三排：2 个视频 &ndash;&gt;-->
+<!--    <div class="columns is-centered">-->
+<!--      <div class="column is-6">-->
+<!--        <video controls muted playsinline height="100%" style="width: 100%; display: block; margin: 0 auto;">-->
+<!--          <source src="./static/videos/fixed_XBot-Lblack.mp4" type="video/mp4">-->
+<!--        </video>-->
+<!--        <p class="has-text-centered"><strong>XBot-L</strong></p>-->
+<!--      </div>-->
+<!--      <div class="column is-6">-->
+<!--        <video controls muted playsinline height="100%" style="width: 100%; display: block; margin: 0 auto;">-->
+<!--          <source src="./static/videos/fixed_mithumanoidblack.mp4" type="video/mp4">-->
+<!--        </video>-->
+<!--        <p class="has-text-centered"><strong>MIT Humanoid</strong></p>-->
+<!--      </div>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; 第四排：2 个视频 &ndash;&gt;-->
+<!--    <div class="columns is-centered">-->
+<!--      <div class="column is-6">-->
+<!--        <video controls muted playsinline height="100%" style="width: 100%; display: block; margin: 0 auto;">-->
+<!--          <source src="./static/videos/fixed_cassieblack.mp4" type="video/mp4">-->
+<!--        </video>-->
+<!--        <p class="has-text-centered"><strong>Cassie</strong></p>-->
+<!--      </div>-->
+<!--      <div class="column is-6">-->
+<!--        <video controls muted playsinline height="100%" style="width: 100%; display: block; margin: 0 auto;">-->
+<!--          <source src="./static/videos/fixed_TRON1black.mp4" type="video/mp4">-->
+<!--        </video>-->
+<!--        <p class="has-text-centered"><strong>TRON1</strong></p>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</section>-->
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- 大标题 -->
+    <h1 class="title is-3 has-text-centered">Challenging Terrain Experiments</h1>
+
+    <!-- 一排：2 个视频 -->
+    <div class="columns is-centered">
+      <div class="column is-6">
+        <video controls muted playsinline height="100%">
+          <source src="./static/videos/IRSE Rough Ground.mp4" type="video/mp4">
+        </video>
+        <p class="has-text-centered"><strong>IRSE walking on the rough ground</strong></p>
+      </div>
+      <div class="column is-6">
+        <video controls muted playsinline height="100%">
+          <source src="./static/videos/IRSE Stair.mp4" type="video/mp4">
+        </video>
+        <p class="has-text-centered"><strong>IRSE walking on the stairs</strong></p>
+      </div>
+    </div>
+        <!-- 第二排：2 个视频 -->
+    <div class="columns is-centered">
+      <div class="column is-6">
+        <video controls muted playsinline height="100%" style="width: 100%; display: block; margin: 0 auto;">
+          <source src="./static/videos/IRSE Slope.mp4" type="video/mp4">
+        </video>
+        <p class="has-text-centered"><strong>IRSE walking on the slope</strong></p>
+      </div>
+      <div class="column is-6">
+        <video controls muted playsinline height="100%" style="width: 100%; display: block; margin: 0 auto;">
+          <source src="./static/videos/IRSE Obstacles.mp4" type="video/mp4">
+        </video>
+        <p class="has-text-centered"><strong>IRSE walking on the obstacles</strong></p>
+      </div>
+    </div>
+        <!-- 第三排：2 个视频 -->
+    <div class="columns is-centered">
+      <div class="column is-6">
+        <video controls muted playsinline height="100%" style="width: 100%; display: block; margin: 0 auto;">
+          <source src="./static/videos/TRON Rough Ground.mp4" type="video/mp4">
+        </video>
+        <p class="has-text-centered"><strong>TRON walking on the rough ground</strong></p>
+      </div>
+      <div class="column is-6">
+        <video controls muted playsinline height="100%" style="width: 100%; display: block; margin: 0 auto;">
+          <source src="./static/videos/TRON Stairs.mp4" type="video/mp4">
+        </video>
+        <p class="has-text-centered"><strong>TRON walking on the stairs</strong></p>
+      </div>
+    </div>
+
+    <!-- 第四排：2 个视频 -->
+    <div class="columns is-centered">
+      <div class="column is-6">
+        <video controls muted playsinline height="100%" style="width: 100%; display: block; margin: 0 auto;">
+          <source src="./static/videos/TRON Slope.mp4" type="video/mp4">
+        </video>
+        <p class="has-text-centered"><strong>TRON walking on the slope</strong></p>
+      </div>
+      <div class="column is-6">
+        <video controls muted playsinline height="100%" style="width: 100%; display: block; margin: 0 auto;">
+          <source src="./static/videos/TRON Obstacles.mp4" type="video/mp4">
+        </video>
+        <p class="has-text-centered"><strong>TRON walking on the obstacles</strong></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- 大标题 -->
+    <h1 class="title is-3 has-text-centered">Mujoco Experiments</h1>
+
+    <!-- 一排：2 个视频 -->
+    <div class="columns is-centered">
+      <div class="column is-6">
+        <video controls muted playsinline height="100%">
+          <source src="./static/videos/IRSE Rough Ground-1.mp4" type="video/mp4">
+        </video>
+        <p class="has-text-centered"><strong>IRSE walking on the rough ground</strong></p>
+      </div>
+      <div class="column is-6">
+        <video controls muted playsinline height="100%">
+          <source src="./static/videos/IRSE Stair-1.mp4" type="video/mp4">
+        </video>
+        <p class="has-text-centered"><strong>IRSE walking on the stairs</strong></p>
+      </div>
+    </div>
+            <!-- 第二排：2 个视频 -->
+    <div class="columns is-centered">
+      <div class="column is-6">
+        <video controls muted playsinline height="100%" style="width: 100%; display: block; margin: 0 auto;">
+          <source src="./static/videos/IRSE Slope-1.mp4" type="video/mp4">
+        </video>
+        <p class="has-text-centered"><strong>IRSE walking on the slope</strong></p>
+      </div>
+      <div class="column is-6">
+        <video controls muted playsinline height="100%" style="width: 100%; display: block; margin: 0 auto;">
+          <source src="./static/videos/IRSE Obstacles-1.mp4" type="video/mp4">
+        </video>
+        <p class="has-text-centered"><strong>IRSE walking on the obstacles</strong></p>
+      </div>
+    </div>
+        <!-- 第三排：2 个视频 -->
+    <div class="columns is-centered">
+      <div class="column is-6">
+        <video controls muted playsinline height="100%" style="width: 100%; display: block; margin: 0 auto;">
+          <source src="./static/videos/TRON Rough Ground-1.mp4" type="video/mp4">
+        </video>
+        <p class="has-text-centered"><strong>TRON walking on the rough ground</strong></p>
+      </div>
+      <div class="column is-6">
+        <video controls muted playsinline height="100%" style="width: 100%; display: block; margin: 0 auto;">
+          <source src="./static/videos/TRON Stair-1.mp4" type="video/mp4">
+        </video>
+        <p class="has-text-centered"><strong>TRON walking on the stairs</strong></p>
+      </div>
+    </div>
+
+    <!-- 第四排：2 个视频 -->
+    <div class="columns is-centered">
+      <div class="column is-6">
+        <video controls muted playsinline height="100%" style="width: 100%; display: block; margin: 0 auto;">
+          <source src="./static/videos/TRON Slope-1.mp4" type="video/mp4">
+        </video>
+        <p class="has-text-centered"><strong>TRON walking on the slope</strong></p>
+      </div>
+      <div class="column is-6">
+        <video controls muted playsinline height="100%" style="width: 100%; display: block; margin: 0 auto;">
+          <source src="./static/videos/TRON Obstacles-1.mp4" type="video/mp4">
+        </video>
+        <p class="has-text-centered"><strong>TRON walking on the obstacles</strong></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>BibTex Code Here
+</code></pre>
+  </div>
+</section>
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This website is licensed under a <a rel="license"
+                                                href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+          <p>
+            Website source code based on the<a href="https://nerfies.github.io/">Nerfies</a> project page. If you want to reuse their <a
+              href="https://github.com/nerfies/nerfies.github.io">source code</a> , please credit them appropriately.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
